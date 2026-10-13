@@ -1,0 +1,12 @@
+gladys-knx
+Copyright 2026 William-De71
+
+This product includes software developed by William-De71
+(https://github.com/William-De71/gladys-knx), licensed under the Apache
+License, Version 2.0.
+
+The Docker image bundles KNXUltimate (https://github.com/Supergiovane/KNXUltimate),
+Copyright (c) 2022 Massimo Saccani, licensed under the MIT License.
+
+KNX and the KNX logo are trademarks of KNX Association cvba, Brussels. This
+project is not affiliated with, endorsed or certified by KNX Association.

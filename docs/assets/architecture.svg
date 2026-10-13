@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" font-family="Inter, 'DejaVu Sans', Arial, sans-serif">
+  <title>Architecture of the KNX integration for Gladys Assistant (illustration)</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#46505a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="420" fill="#ffffff"/>
+  <text x="980" y="408" text-anchor="end" font-size="12" fill="#8a949e">illustration</text>
+
+  <!-- Gladys -->
+  <rect x="20" y="40" width="230" height="320" rx="14" fill="#eef4fb" stroke="#2979d6" stroke-width="2"/>
+  <text x="135" y="72" text-anchor="middle" font-size="20" font-weight="700" fill="#1d4f8c">Gladys Assistant</text>
+  <g font-size="14" fill="#24303c">
+    <rect x="38" y="92" width="194" height="38" rx="8" fill="#ffffff" stroke="#b9cde6"/>
+    <text x="135" y="116" text-anchor="middle">Devices, Discover tab</text>
+    <rect x="38" y="140" width="194" height="38" rx="8" fill="#ffffff" stroke="#b9cde6"/>
+    <text x="135" y="164" text-anchor="middle">Configuration buttons</text>
+    <rect x="38" y="188" width="194" height="38" rx="8" fill="#ffffff" stroke="#b9cde6"/>
+    <text x="135" y="212" text-anchor="middle">Scenes: triggers, actions</text>
+    <rect x="38" y="236" width="194" height="38" rx="8" fill="#ffffff" stroke="#b9cde6"/>
+    <text x="135" y="260" text-anchor="middle">“KNX bus” widget</text>
+    <rect x="38" y="284" width="194" height="58" rx="8" fill="#ffffff" stroke="#b9cde6"/>
+    <text x="135" y="308" text-anchor="middle">Core (host network):</text>
+    <text x="135" y="328" text-anchor="middle">interface search</text>
+  </g>
+
+  <!-- Link Gladys / container -->
+  <line x1="256" y1="180" x2="354" y2="180" stroke="#46505a" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="305" y="160" text-anchor="middle" font-size="12" fill="#46505a">REST</text>
+  <text x="305" y="204" text-anchor="middle" font-size="10" fill="#46505a">/api/integration/v1</text>
+  <text x="305" y="220" text-anchor="middle" font-size="12" fill="#46505a">+ WebSocket</text>
+
+  <!-- Container -->
+  <rect x="360" y="40" width="290" height="320" rx="14" fill="#edf7f1" stroke="#209678" stroke-width="2"/>
+  <text x="505" y="70" text-anchor="middle" font-size="18" font-weight="700" fill="#14614d">Integration container</text>
+  <text x="505" y="90" text-anchor="middle" font-size="12" fill="#3b6b5c">read-only rootfs · 256 MB · non-root</text>
+  <g font-size="13" fill="#24303c">
+    <rect x="378" y="106" width="254" height="34" rx="8" fill="#ffffff" stroke="#b7dccb"/>
+    <text x="505" y="128" text-anchor="middle">Gladys SDK (integration-sdk)</text>
+    <rect x="378" y="148" width="254" height="34" rx="8" fill="#ffffff" stroke="#b7dccb"/>
+    <text x="505" y="170" text-anchor="middle">Declared devices → features</text>
+    <rect x="378" y="190" width="254" height="34" rx="8" fill="#ffffff" stroke="#b7dccb"/>
+    <text x="505" y="212" text-anchor="middle">States: 240 / min, changes only</text>
+    <rect x="378" y="232" width="254" height="34" rx="8" fill="#ffffff" stroke="#b7dccb"/>
+    <text x="505" y="254" text-anchor="middle">Datapoint types (DPT)</text>
+    <rect x="378" y="274" width="254" height="34" rx="8" fill="#ffffff" stroke="#b7dccb"/>
+    <text x="505" y="296" text-anchor="middle">KNXUltimate: KNXnet/IP client</text>
+    <text x="505" y="336" text-anchor="middle" font-size="12" fill="#3b6b5c">declarations saved in the Gladys config</text>
+  </g>
+
+  <!-- Link container / interface -->
+  <line x1="656" y1="180" x2="744" y2="180" stroke="#46505a" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="700" y="148" text-anchor="middle" font-size="12" fill="#46505a">KNXnet/IP</text>
+  <text x="700" y="164" text-anchor="middle" font-size="11" fill="#46505a">UDP / TCP 3671</text>
+  <text x="700" y="204" text-anchor="middle" font-size="11" fill="#46505a">tunnelling,</text>
+  <text x="700" y="220" text-anchor="middle" font-size="11" fill="#46505a">IP Secure</text>
+  <text x="700" y="236" text-anchor="middle" font-size="11" fill="#46505a">(local network)</text>
+
+  <!-- KNX installation -->
+  <rect x="750" y="40" width="230" height="320" rx="14" fill="#f2fbf4" stroke="#0cb14b" stroke-width="2"/>
+  <text x="865" y="72" text-anchor="middle" font-size="18" font-weight="700" fill="#0a7a35">KNX installation</text>
+  <g font-size="13" fill="#24303c">
+    <rect x="768" y="92" width="194" height="40" rx="8" fill="#ffffff" stroke="#9ed8b0"/>
+    <text x="865" y="117" text-anchor="middle">KNX IP interface / router</text>
+    <line x1="865" y1="132" x2="865" y2="160" stroke="#0cb14b" stroke-width="3"/>
+    <text x="875" y="151" font-size="11" fill="#0a7a35">TP bus</text>
+    <rect x="768" y="160" width="194" height="32" rx="8" fill="#ffffff" stroke="#9ed8b0"/>
+    <text x="865" y="181" text-anchor="middle">Switch / dim actuators</text>
+    <rect x="768" y="200" width="194" height="32" rx="8" fill="#ffffff" stroke="#9ed8b0"/>
+    <text x="865" y="221" text-anchor="middle">Blind actuators</text>
+    <rect x="768" y="240" width="194" height="32" rx="8" fill="#ffffff" stroke="#9ed8b0"/>
+    <text x="865" y="261" text-anchor="middle">Room controllers</text>
+    <rect x="768" y="280" width="194" height="32" rx="8" fill="#ffffff" stroke="#9ed8b0"/>
+    <text x="865" y="301" text-anchor="middle">Sensors, push buttons</text>
+    <text x="865" y="340" text-anchor="middle" font-size="12" fill="#3b6b5c">group addresses from ETS</text>
+  </g>
+</svg>

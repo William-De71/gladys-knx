@@ -1,0 +1,1856 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "KNX",
+  "description": {
+    "en": "Control your KNX installation through a KNX IP interface: lights, covers, sensors, scenes.",
+    "fr": "Pilotez votre installation KNX via une interface IP : lumières, volets, capteurs, scènes.",
+    "de": "Steuern Sie Ihre KNX-Anlage über eine IP-Schnittstelle: Licht, Rollläden, Sensoren, Szenen.",
+    "es": "Controle su instalación KNX con una interfaz IP: luces, persianas, sensores, escenas."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-knx:0.1.0",
+  "gladys_version": ">=5.1.1",
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-knx/main/cover.jpg",
+  "categories": ["protocols", "lighting", "climate"],
+  "transports": ["local"],
+  "network_discovery": [
+    {
+      "type": "udp-active-broadcast",
+      "ports": [3671]
+    }
+  ],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Connect Gladys to your KNX installation",
+        "fr": "Connecter Gladys à votre installation KNX",
+        "de": "Gladys mit Ihrer KNX-Anlage verbinden",
+        "es": "Conectar Gladys a su instalación KNX"
+      },
+      "description": {
+        "en": "Gladys talks to the KNX bus through a KNX IP interface or router on your network. Leave its address empty to use the first one found on the network. KNX devices cannot be discovered: declare each one below with the “Declare a …” buttons and the group addresses of your ETS project, then add them from the Discover tab.",
+        "fr": "Gladys dialogue avec le bus KNX via une interface ou un routeur IP KNX de votre réseau. Laissez son adresse vide pour utiliser la première trouvée sur le réseau. Les appareils KNX ne peuvent pas être découverts : déclarez chacun d’eux plus bas avec les boutons « Déclarer … » et les adresses de groupe de votre projet ETS, puis ajoutez-les depuis l’onglet Découverte.",
+        "de": "Gladys kommuniziert mit dem KNX-Bus über eine KNX-IP-Schnittstelle oder einen KNX-IP-Router in Ihrem Netzwerk. Lassen Sie die Adresse leer, um die erste im Netzwerk gefundene zu verwenden. KNX-Geräte lassen sich nicht automatisch finden: Deklarieren Sie jedes unten mit den Schaltflächen „… deklarieren“ und den Gruppenadressen Ihres ETS-Projekts und fügen Sie es dann im Tab Entdecken hinzu.",
+        "es": "Gladys se comunica con el bus KNX a través de una interfaz o un router IP KNX de su red. Deje su dirección vacía para usar la primera que se encuentre en la red. Los dispositivos KNX no se pueden descubrir: declare cada uno abajo con los botones «Declarar …» y las direcciones de grupo de su proyecto ETS, y luego añádalos desde la pestaña Descubrir."
+      }
+    },
+    {
+      "key": "connection_mode",
+      "type": "select",
+      "default": "tunnel_udp",
+      "label": {
+        "en": "Connection",
+        "fr": "Connexion",
+        "de": "Verbindung",
+        "es": "Conexión"
+      },
+      "options": [
+        {
+          "value": "tunnel_udp",
+          "label": {
+            "en": "UDP tunnelling (most interfaces)",
+            "fr": "Tunneling UDP (la plupart des interfaces)",
+            "de": "UDP-Tunneling (die meisten Schnittstellen)",
+            "es": "Tunneling UDP (la mayoría de las interfaces)"
+          }
+        },
+        {
+          "value": "tunnel_tcp",
+          "label": {
+            "en": "TCP tunnelling (KNX IP Secure, recent interfaces)",
+            "fr": "Tunneling TCP (KNX IP Secure, interfaces récentes)",
+            "de": "TCP-Tunneling (KNX IP Secure, neuere Schnittstellen)",
+            "es": "Tunneling TCP (KNX IP Secure, interfaces recientes)"
+          }
+        },
+        {
+          "value": "routing",
+          "label": {
+            "en": "Routing (multicast, KNX IP router)",
+            "fr": "Routage (multicast, routeur IP KNX)",
+            "de": "Routing (Multicast, KNX-IP-Router)",
+            "es": "Enrutamiento (multicast, router IP KNX)"
+          }
+        }
+      ],
+      "description": {
+        "en": "Routing uses multicast, which usually does not reach the container of the integration: prefer tunnelling.",
+        "fr": "Le routage passe par le multicast, qui n’atteint généralement pas le conteneur de l’intégration : préférez le tunneling.",
+        "de": "Routing nutzt Multicast, das den Container der Integration meist nicht erreicht: Tunneling ist vorzuziehen.",
+        "es": "El enrutamiento usa multicast, que normalmente no llega al contenedor de la integración: es preferible el tunneling."
+      }
+    },
+    {
+      "key": "gateway_host",
+      "type": "string",
+      "label": {
+        "en": "KNX IP interface address",
+        "fr": "Adresse de l’interface IP KNX",
+        "de": "Adresse der KNX-IP-Schnittstelle",
+        "es": "Dirección de la interfaz IP KNX"
+      },
+      "placeholder": {
+        "en": "192.168.1.50",
+        "fr": "192.168.1.50",
+        "de": "192.168.1.50",
+        "es": "192.168.1.50"
+      },
+      "description": {
+        "en": "IP address or host name. Empty: the first interface found on the network (the “Search for KNX IP interfaces” button lists them).",
+        "fr": "Adresse IP ou nom d’hôte. Vide : la première interface trouvée sur le réseau (le bouton « Rechercher les interfaces IP KNX » les liste).",
+        "de": "IP-Adresse oder Hostname. Leer: die erste im Netzwerk gefundene Schnittstelle (die Schaltfläche „KNX-IP-Schnittstellen suchen“ listet sie auf).",
+        "es": "Dirección IP o nombre de host. Vacío: la primera interfaz encontrada en la red (el botón «Buscar interfaces IP KNX» las muestra)."
+      }
+    },
+    {
+      "key": "gateway_port",
+      "type": "number",
+      "default": 3671,
+      "min": 1,
+      "max": 65535,
+      "label": {
+        "en": "Port",
+        "fr": "Port",
+        "de": "Port",
+        "es": "Puerto"
+      }
+    },
+    {
+      "key": "individual_address",
+      "type": "string",
+      "label": {
+        "en": "Individual address of Gladys",
+        "fr": "Adresse physique de Gladys",
+        "de": "Physikalische Adresse von Gladys",
+        "es": "Dirección individual de Gladys"
+      },
+      "placeholder": {
+        "en": "1.1.250",
+        "fr": "1.1.250",
+        "de": "1.1.250",
+        "es": "1.1.250"
+      },
+      "description": {
+        "en": "Optional with tunnelling (the interface gives the address of its tunnel). Required with routing: a free address of the line, reserved in ETS.",
+        "fr": "Facultative en tunneling (l’interface donne l’adresse de son tunnel). Obligatoire en routage : une adresse libre de la ligne, réservée dans ETS.",
+        "de": "Optional beim Tunneling (die Schnittstelle vergibt die Adresse ihres Tunnels). Beim Routing erforderlich: eine freie, in ETS reservierte Adresse der Linie.",
+        "es": "Opcional con tunneling (la interfaz asigna la dirección de su túnel). Obligatoria con enrutamiento: una dirección libre de la línea, reservada en ETS."
+      }
+    },
+    {
+      "key": "secure_section",
+      "type": "section",
+      "label": {
+        "en": "KNX IP Secure",
+        "fr": "KNX IP Secure",
+        "de": "KNX IP Secure",
+        "es": "KNX IP Secure"
+      },
+      "description": {
+        "en": "For a KNX IP Secure interface, choose TCP tunnelling and fill in the tunnel user of your ETS project (properties of the interface, tunnel tab). KNX Data Secure (encrypted group communication) is not supported.",
+        "fr": "Pour une interface KNX IP Secure, choisissez le tunneling TCP et renseignez l’utilisateur du tunnel de votre projet ETS (propriétés de l’interface, onglet du tunnel). KNX Data Secure (communication de groupe chiffrée) n’est pas pris en charge.",
+        "de": "Wählen Sie für eine KNX-IP-Secure-Schnittstelle TCP-Tunneling und tragen Sie den Tunnelbenutzer aus Ihrem ETS-Projekt ein (Eigenschaften der Schnittstelle, Tunnel-Reiter). KNX Data Secure (verschlüsselte Gruppenkommunikation) wird nicht unterstützt.",
+        "es": "Para una interfaz KNX IP Secure, elija tunneling TCP e indique el usuario del túnel de su proyecto ETS (propiedades de la interfaz, pestaña del túnel). KNX Data Secure (comunicación de grupo cifrada) no es compatible."
+      }
+    },
+    {
+      "key": "secure",
+      "type": "boolean",
+      "default": false,
+      "label": {
+        "en": "Use KNX IP Secure",
+        "fr": "Utiliser KNX IP Secure",
+        "de": "KNX IP Secure verwenden",
+        "es": "Usar KNX IP Secure"
+      }
+    },
+    {
+      "key": "secure_tunnel_address",
+      "type": "string",
+      "label": {
+        "en": "Individual address of the tunnel",
+        "fr": "Adresse physique du tunnel",
+        "de": "Physikalische Adresse des Tunnels",
+        "es": "Dirección individual del túnel"
+      },
+      "placeholder": {
+        "en": "1.1.254",
+        "fr": "1.1.254",
+        "de": "1.1.254",
+        "es": "1.1.254"
+      }
+    },
+    {
+      "key": "secure_user_id",
+      "type": "number",
+      "default": 2,
+      "min": 1,
+      "max": 127,
+      "label": {
+        "en": "Tunnel user ID",
+        "fr": "ID de l’utilisateur du tunnel",
+        "de": "Benutzer-ID des Tunnels",
+        "es": "ID de usuario del túnel"
+      }
+    },
+    {
+      "key": "secure_password",
+      "type": "secret",
+      "label": {
+        "en": "Tunnel user password",
+        "fr": "Mot de passe de l’utilisateur du tunnel",
+        "de": "Passwort des Tunnelbenutzers",
+        "es": "Contraseña del usuario del túnel"
+      }
+    },
+    {
+      "key": "secure_device_authentication",
+      "type": "secret",
+      "label": {
+        "en": "Device authentication code (optional)",
+        "fr": "Code d’authentification de l’appareil (facultatif)",
+        "de": "Geräte-Authentifizierungscode (optional)",
+        "es": "Código de autenticación del dispositivo (opcional)"
+      },
+      "description": {
+        "en": "From the ETS project: lets the integration check that it talks to your interface.",
+        "fr": "Issu du projet ETS : permet à l’intégration de vérifier qu’elle parle bien à votre interface.",
+        "de": "Aus dem ETS-Projekt: Damit prüft die Integration, dass sie mit Ihrer Schnittstelle spricht.",
+        "es": "Del proyecto ETS: permite a la integración comprobar que habla con su interfaz."
+      }
+    },
+    {
+      "key": "behavior_section",
+      "type": "section",
+      "label": {
+        "en": "States and scenes",
+        "fr": "États et scènes",
+        "de": "Zustände und Szenen",
+        "es": "Estados y escenas"
+      },
+      "description": {
+        "en": "KNX devices send their changes themselves. The integration also reads the status addresses at startup and at the chosen interval, to catch up with telegrams sent while Gladys was stopped.",
+        "fr": "Les appareils KNX envoient eux-mêmes leurs changements. L’intégration lit aussi les adresses d’état au démarrage et à l’intervalle choisi, pour rattraper les télégrammes envoyés pendant que Gladys était arrêtée.",
+        "de": "KNX-Geräte senden ihre Änderungen selbst. Die Integration liest die Statusadressen zusätzlich beim Start und im gewählten Intervall, um Telegramme nachzuholen, die gesendet wurden, während Gladys gestoppt war.",
+        "es": "Los dispositivos KNX envían ellos mismos sus cambios. La integración también lee las direcciones de estado al arrancar y en el intervalo elegido, para recuperar los telegramas enviados mientras Gladys estaba detenida."
+      }
+    },
+    {
+      "key": "sync_states",
+      "type": "boolean",
+      "default": true,
+      "label": {
+        "en": "Read the states at startup",
+        "fr": "Lire les états au démarrage",
+        "de": "Zustände beim Start lesen",
+        "es": "Leer los estados al arrancar"
+      }
+    },
+    {
+      "key": "sync_interval_minutes",
+      "type": "number",
+      "default": 60,
+      "min": 0,
+      "max": 1440,
+      "label": {
+        "en": "Read the states again every (minutes)",
+        "fr": "Relire les états toutes les (minutes)",
+        "de": "Zustände erneut lesen alle (Minuten)",
+        "es": "Volver a leer los estados cada (minutos)"
+      },
+      "description": {
+        "en": "0: never.",
+        "fr": "0 : jamais.",
+        "de": "0: nie.",
+        "es": "0: nunca."
+      }
+    },
+    {
+      "key": "event_addresses",
+      "type": "string",
+      "label": {
+        "en": "Group addresses for scenes",
+        "fr": "Adresses de groupe pour les scènes",
+        "de": "Gruppenadressen für Szenen",
+        "es": "Direcciones de grupo para escenas"
+      },
+      "placeholder": {
+        "en": "1/0/*, 2/1/5:1.001",
+        "fr": "1/0/*, 2/1/5:1.001",
+        "de": "1/0/*, 2/1/5:1.001",
+        "es": "1/0/*, 2/1/5:1.001"
+      },
+      "description": {
+        "en": "Telegrams on these addresses start the “A KNX telegram is received” scenes. Separate them with commas; * covers a main or middle group; add :DPT to decode the value (1/0/7:9.001).",
+        "fr": "Les télégrammes sur ces adresses déclenchent les scènes « Un télégramme KNX est reçu ». Séparez-les par des virgules ; * couvre un groupe principal ou intermédiaire ; ajoutez :DPT pour décoder la valeur (1/0/7:9.001).",
+        "de": "Telegramme an diese Adressen starten die Szenen „Ein KNX-Telegramm wird empfangen“. Trennen Sie sie mit Kommas; * deckt eine Haupt- oder Mittelgruppe ab; mit :DPT wird der Wert dekodiert (1/0/7:9.001).",
+        "es": "Los telegramas en estas direcciones inician las escenas «Se recibe un telegrama KNX». Sepárelas con comas; * cubre un grupo principal o intermedio; añada :DPT para decodificar el valor (1/0/7:9.001)."
+      }
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "default": "en",
+      "label": {
+        "en": "Language of the feature names",
+        "fr": "Langue des noms de fonctionnalités",
+        "de": "Sprache der Funktionsnamen",
+        "es": "Idioma de los nombres de funciones"
+      },
+      "description": {
+        "en": "Used when a device is added from the Discover tab.",
+        "fr": "Utilisée quand un appareil est ajouté depuis l’onglet Découverte.",
+        "de": "Wird verwendet, wenn ein Gerät im Tab Entdecken hinzugefügt wird.",
+        "es": "Se usa al añadir un dispositivo desde la pestaña Descubrir."
+      },
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "State of the link to the KNX IP interface and of the bus traffic.",
+        "fr": "État de la liaison avec l’interface IP KNX et du trafic sur le bus.",
+        "de": "Zustand der Verbindung zur KNX-IP-Schnittstelle und des Busverkehrs.",
+        "es": "Estado del enlace con la interfaz IP KNX y del tráfico del bus."
+      }
+    },
+    {
+      "key": "discover_gateways",
+      "timeout_seconds": 20,
+      "label": {
+        "en": "Search for KNX IP interfaces",
+        "fr": "Rechercher les interfaces IP KNX",
+        "de": "KNX-IP-Schnittstellen suchen",
+        "es": "Buscar interfaces IP KNX"
+      },
+      "description": {
+        "en": "Lists the KNX IP interfaces and routers answering on the network, with their address.",
+        "fr": "Liste les interfaces et routeurs IP KNX qui répondent sur le réseau, avec leur adresse.",
+        "de": "Listet die KNX-IP-Schnittstellen und -Router auf, die im Netzwerk antworten, mit ihrer Adresse.",
+        "es": "Muestra las interfaces y routers IP KNX que responden en la red, con su dirección."
+      }
+    },
+    {
+      "key": "add_light",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a light",
+        "fr": "Déclarer une lumière",
+        "de": "Licht deklarieren",
+        "es": "Declarar una luz"
+      },
+      "description": {
+        "en": "On/off, and optionally brightness (DPT 5.001), RGB color (DPT 232.600) and color temperature (DPT 7.600). The same switch address again updates the light.",
+        "fr": "Marche/arrêt, et si besoin luminosité (DPT 5.001), couleur RVB (DPT 232.600) et température de couleur (DPT 7.600). La même adresse de commutation met à jour la lumière.",
+        "de": "Ein/Aus und optional Helligkeit (DPT 5.001), RGB-Farbe (DPT 232.600) und Farbtemperatur (DPT 7.600). Dieselbe Schaltadresse erneut aktualisiert das Licht.",
+        "es": "Encendido/apagado y, si se desea, brillo (DPT 5.001), color RGB (DPT 232.600) y temperatura de color (DPT 7.600). La misma dirección de conmutación actualiza la luz."
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "Switch address (DPT 1.001)",
+            "fr": "Adresse de commutation (DPT 1.001)",
+            "de": "Schaltadresse (DPT 1.001)",
+            "es": "Dirección de conmutación (DPT 1.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "required": true
+        },
+        {
+          "key": "state_address",
+          "type": "string",
+          "label": {
+            "en": "Switch status address",
+            "fr": "Adresse d’état de commutation",
+            "de": "Statusadresse Schalten",
+            "es": "Dirección de estado de conmutación"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "description": {
+            "en": "Status object of the actuator (read flag set in ETS). Empty: the device has no feedback, Gladys keeps the last command.",
+            "fr": "Objet d’état de l’actionneur (indicateur de lecture activé dans ETS). Vide : pas de retour d’état, Gladys garde la dernière commande.",
+            "de": "Statusobjekt des Aktors (Lesen-Flag in ETS gesetzt). Leer: keine Rückmeldung, Gladys behält den letzten Befehl.",
+            "es": "Objeto de estado del actuador (indicador de lectura activado en ETS). Vacío: sin retorno de estado, Gladys conserva la última orden."
+          }
+        },
+        {
+          "key": "brightness_address",
+          "type": "string",
+          "label": {
+            "en": "Brightness address (DPT 5.001)",
+            "fr": "Adresse de luminosité (DPT 5.001)",
+            "de": "Helligkeitsadresse (DPT 5.001)",
+            "es": "Dirección de brillo (DPT 5.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "brightness_state_address",
+          "type": "string",
+          "label": {
+            "en": "Brightness status address",
+            "fr": "Adresse d’état de luminosité",
+            "de": "Statusadresse Helligkeit",
+            "es": "Dirección de estado de brillo"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "color_address",
+          "type": "string",
+          "label": {
+            "en": "RGB color address (DPT 232.600)",
+            "fr": "Adresse de couleur RVB (DPT 232.600)",
+            "de": "RGB-Farbadresse (DPT 232.600)",
+            "es": "Dirección de color RGB (DPT 232.600)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "color_state_address",
+          "type": "string",
+          "label": {
+            "en": "RGB color status address",
+            "fr": "Adresse d’état de couleur RVB",
+            "de": "Statusadresse RGB-Farbe",
+            "es": "Dirección de estado de color RGB"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "color_temperature_address",
+          "type": "string",
+          "label": {
+            "en": "Color temperature address (DPT 7.600)",
+            "fr": "Adresse de température de couleur (DPT 7.600)",
+            "de": "Farbtemperaturadresse (DPT 7.600)",
+            "es": "Dirección de temperatura de color (DPT 7.600)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "color_temperature_state_address",
+          "type": "string",
+          "label": {
+            "en": "Color temperature status address",
+            "fr": "Adresse d’état de température de couleur",
+            "de": "Statusadresse Farbtemperatur",
+            "es": "Dirección de estado de temperatura de color"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "min_kelvin",
+          "type": "number",
+          "default": 2700,
+          "min": 1000,
+          "max": 10000,
+          "label": {
+            "en": "Warmest white (K)",
+            "fr": "Blanc le plus chaud (K)",
+            "de": "Wärmstes Weiß (K)",
+            "es": "Blanco más cálido (K)"
+          }
+        },
+        {
+          "key": "max_kelvin",
+          "type": "number",
+          "default": 6000,
+          "min": 1000,
+          "max": 10000,
+          "label": {
+            "en": "Coldest white (K)",
+            "fr": "Blanc le plus froid (K)",
+            "de": "Kältestes Weiß (K)",
+            "es": "Blanco más frío (K)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "add_switch",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a switch",
+        "fr": "Déclarer un interrupteur",
+        "de": "Schalter deklarieren",
+        "es": "Declarar un interruptor"
+      },
+      "description": {
+        "en": "A switching actuator channel (DPT 1.001): socket, heating valve, pump…",
+        "fr": "Un canal d’actionneur de commutation (DPT 1.001) : prise, vanne de chauffage, pompe…",
+        "de": "Ein Schaltaktorkanal (DPT 1.001): Steckdose, Heizventil, Pumpe…",
+        "es": "Un canal de actuador de conmutación (DPT 1.001): enchufe, válvula de calefacción, bomba…"
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "Switch address (DPT 1.001)",
+            "fr": "Adresse de commutation (DPT 1.001)",
+            "de": "Schaltadresse (DPT 1.001)",
+            "es": "Dirección de conmutación (DPT 1.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "required": true
+        },
+        {
+          "key": "state_address",
+          "type": "string",
+          "label": {
+            "en": "Switch status address",
+            "fr": "Adresse d’état de commutation",
+            "de": "Statusadresse Schalten",
+            "es": "Dirección de estado de conmutación"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "description": {
+            "en": "Status object of the actuator (read flag set in ETS). Empty: the device has no feedback, Gladys keeps the last command.",
+            "fr": "Objet d’état de l’actionneur (indicateur de lecture activé dans ETS). Vide : pas de retour d’état, Gladys garde la dernière commande.",
+            "de": "Statusobjekt des Aktors (Lesen-Flag in ETS gesetzt). Leer: keine Rückmeldung, Gladys behält den letzten Befehl.",
+            "es": "Objeto de estado del actuador (indicador de lectura activado en ETS). Vacío: sin retorno de estado, Gladys conserva la última orden."
+          }
+        },
+        {
+          "key": "invert",
+          "type": "boolean",
+          "default": false,
+          "label": {
+            "en": "Invert the value",
+            "fr": "Inverser la valeur",
+            "de": "Wert invertieren",
+            "es": "Invertir el valor"
+          }
+        }
+      ]
+    },
+    {
+      "key": "add_cover",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a cover",
+        "fr": "Déclarer un volet",
+        "de": "Rollladen deklarieren",
+        "es": "Declarar una persiana"
+      },
+      "description": {
+        "en": "Shutter, blind or curtain: up/down (DPT 1.008) and/or position (DPT 5.001), with a stop address (DPT 1.007 or 1.010).",
+        "fr": "Volet roulant, store ou rideau : montée/descente (DPT 1.008) et/ou position (DPT 5.001), avec une adresse d’arrêt (DPT 1.007 ou 1.010).",
+        "de": "Rollladen, Jalousie oder Vorhang: Auf/Ab (DPT 1.008) und/oder Position (DPT 5.001), mit einer Stoppadresse (DPT 1.007 oder 1.010).",
+        "es": "Persiana, estor o cortina: subir/bajar (DPT 1.008) y/o posición (DPT 5.001), con una dirección de parada (DPT 1.007 o 1.010)."
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "cover_type",
+          "type": "select",
+          "default": "shutter",
+          "label": {
+            "en": "Type",
+            "fr": "Type",
+            "de": "Typ",
+            "es": "Tipo"
+          },
+          "options": [
+            {
+              "value": "shutter",
+              "label": {
+                "en": "Shutter or blind",
+                "fr": "Volet ou store",
+                "de": "Rollladen oder Jalousie",
+                "es": "Persiana o estor"
+              }
+            },
+            {
+              "value": "curtain",
+              "label": {
+                "en": "Curtain",
+                "fr": "Rideau",
+                "de": "Vorhang",
+                "es": "Cortina"
+              }
+            }
+          ]
+        },
+        {
+          "key": "up_down_address",
+          "type": "string",
+          "label": {
+            "en": "Up/down address (DPT 1.008)",
+            "fr": "Adresse de montée/descente (DPT 1.008)",
+            "de": "Auf/Ab-Adresse (DPT 1.008)",
+            "es": "Dirección de subir/bajar (DPT 1.008)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "stop_address",
+          "type": "string",
+          "label": {
+            "en": "Stop address (DPT 1.007 or 1.010)",
+            "fr": "Adresse d’arrêt (DPT 1.007 ou 1.010)",
+            "de": "Stoppadresse (DPT 1.007 oder 1.010)",
+            "es": "Dirección de parada (DPT 1.007 o 1.010)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "position_address",
+          "type": "string",
+          "label": {
+            "en": "Position address (DPT 5.001)",
+            "fr": "Adresse de position (DPT 5.001)",
+            "de": "Positionsadresse (DPT 5.001)",
+            "es": "Dirección de posición (DPT 5.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "position_state_address",
+          "type": "string",
+          "label": {
+            "en": "Position status address",
+            "fr": "Adresse d’état de position",
+            "de": "Statusadresse Position",
+            "es": "Dirección de estado de posición"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "description": {
+            "en": "Status object of the actuator (read flag set in ETS). Empty: the device has no feedback, Gladys keeps the last command.",
+            "fr": "Objet d’état de l’actionneur (indicateur de lecture activé dans ETS). Vide : pas de retour d’état, Gladys garde la dernière commande.",
+            "de": "Statusobjekt des Aktors (Lesen-Flag in ETS gesetzt). Leer: keine Rückmeldung, Gladys behält den letzten Befehl.",
+            "es": "Objeto de estado del actuador (indicador de lectura activado en ETS). Vacío: sin retorno de estado, Gladys conserva la última orden."
+          }
+        },
+        {
+          "key": "invert_position",
+          "type": "boolean",
+          "default": false,
+          "label": {
+            "en": "Invert the position",
+            "fr": "Inverser la position",
+            "de": "Position invertieren",
+            "es": "Invertir la posición"
+          },
+          "description": {
+            "en": "KNX actuators say 0 % = open, 100 % = closed. Check if yours says the opposite.",
+            "fr": "Les actionneurs KNX indiquent 0 % = ouvert, 100 % = fermé. Cochez si le vôtre dit l’inverse.",
+            "de": "KNX-Aktoren melden 0 % = offen, 100 % = geschlossen. Aktivieren, wenn Ihrer es umgekehrt meldet.",
+            "es": "Los actuadores KNX indican 0 % = abierto, 100 % = cerrado. Márquelo si el suyo indica lo contrario."
+          }
+        }
+      ]
+    },
+    {
+      "key": "add_sensor",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a sensor",
+        "fr": "Déclarer un capteur",
+        "de": "Sensor deklarieren",
+        "es": "Declarar un sensor"
+      },
+      "description": {
+        "en": "A measured value sent on the bus: temperature, humidity, light, CO2, power, energy meter…",
+        "fr": "Une mesure envoyée sur le bus : température, humidité, luminosité, CO2, puissance, compteur d’énergie…",
+        "de": "Ein Messwert auf dem Bus: Temperatur, Luftfeuchtigkeit, Helligkeit, CO2, Leistung, Energiezähler…",
+        "es": "Un valor medido enviado al bus: temperatura, humedad, luz, CO2, potencia, contador de energía…"
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "sensor_type",
+          "type": "select",
+          "default": "temperature",
+          "required": true,
+          "label": {
+            "en": "Measure",
+            "fr": "Mesure",
+            "de": "Messgröße",
+            "es": "Medida"
+          },
+          "options": [
+            {
+              "value": "temperature",
+              "label": {
+                "en": "Temperature (DPT 9.001, °C)",
+                "fr": "Température (DPT 9.001, °C)",
+                "de": "Temperatur (DPT 9.001, °C)",
+                "es": "Temperatura (DPT 9.001, °C)"
+              }
+            },
+            {
+              "value": "humidity",
+              "label": {
+                "en": "Humidity (DPT 9.007, %)",
+                "fr": "Humidité (DPT 9.007, %)",
+                "de": "Luftfeuchtigkeit (DPT 9.007, %)",
+                "es": "Humedad (DPT 9.007, %)"
+              }
+            },
+            {
+              "value": "illuminance",
+              "label": {
+                "en": "Illuminance (DPT 9.004, lux)",
+                "fr": "Luminosité (DPT 9.004, lux)",
+                "de": "Helligkeit (DPT 9.004, Lux)",
+                "es": "Iluminancia (DPT 9.004, lux)"
+              }
+            },
+            {
+              "value": "co2",
+              "label": {
+                "en": "CO2 (DPT 9.008, ppm)",
+                "fr": "CO2 (DPT 9.008, ppm)",
+                "de": "CO2 (DPT 9.008, ppm)",
+                "es": "CO2 (DPT 9.008, ppm)"
+              }
+            },
+            {
+              "value": "pressure",
+              "label": {
+                "en": "Air pressure (DPT 9.006, Pa)",
+                "fr": "Pression atmosphérique (DPT 9.006, Pa)",
+                "de": "Luftdruck (DPT 9.006, Pa)",
+                "es": "Presión atmosférica (DPT 9.006, Pa)"
+              }
+            },
+            {
+              "value": "wind_speed",
+              "label": {
+                "en": "Wind speed (DPT 9.005, m/s)",
+                "fr": "Vitesse du vent (DPT 9.005, m/s)",
+                "de": "Windgeschwindigkeit (DPT 9.005, m/s)",
+                "es": "Velocidad del viento (DPT 9.005, m/s)"
+              }
+            },
+            {
+              "value": "power",
+              "label": {
+                "en": "Power (DPT 14.056 W or 9.024 kW)",
+                "fr": "Puissance (DPT 14.056 W ou 9.024 kW)",
+                "de": "Leistung (DPT 14.056 W oder 9.024 kW)",
+                "es": "Potencia (DPT 14.056 W o 9.024 kW)"
+              }
+            },
+            {
+              "value": "energy",
+              "label": {
+                "en": "Energy meter (DPT 13.013, kWh)",
+                "fr": "Compteur d’énergie (DPT 13.013, kWh)",
+                "de": "Energiezähler (DPT 13.013, kWh)",
+                "es": "Contador de energía (DPT 13.013, kWh)"
+              }
+            },
+            {
+              "value": "energy_wh",
+              "label": {
+                "en": "Energy meter (DPT 13.010, Wh)",
+                "fr": "Compteur d’énergie (DPT 13.010, Wh)",
+                "de": "Energiezähler (DPT 13.010, Wh)",
+                "es": "Contador de energía (DPT 13.010, Wh)"
+              }
+            },
+            {
+              "value": "voltage",
+              "label": {
+                "en": "Voltage (DPT 14.027 V or 9.020 mV)",
+                "fr": "Tension (DPT 14.027 V ou 9.020 mV)",
+                "de": "Spannung (DPT 14.027 V oder 9.020 mV)",
+                "es": "Tensión (DPT 14.027 V o 9.020 mV)"
+              }
+            },
+            {
+              "value": "current",
+              "label": {
+                "en": "Current (DPT 14.019 A or 7.012 mA)",
+                "fr": "Courant (DPT 14.019 A ou 7.012 mA)",
+                "de": "Strom (DPT 14.019 A oder 7.012 mA)",
+                "es": "Corriente (DPT 14.019 A o 7.012 mA)"
+              }
+            },
+            {
+              "value": "percent",
+              "label": {
+                "en": "Percentage (DPT 5.001, %)",
+                "fr": "Pourcentage (DPT 5.001, %)",
+                "de": "Prozentsatz (DPT 5.001, %)",
+                "es": "Porcentaje (DPT 5.001, %)"
+              }
+            },
+            {
+              "value": "counter",
+              "label": {
+                "en": "Counter (DPT 12.001)",
+                "fr": "Compteur (DPT 12.001)",
+                "de": "Zähler (DPT 12.001)",
+                "es": "Contador (DPT 12.001)"
+              }
+            }
+          ]
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "Value address",
+            "fr": "Adresse de la valeur",
+            "de": "Wertadresse",
+            "es": "Dirección del valor"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "add_binary_sensor",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a binary sensor",
+        "fr": "Déclarer un capteur binaire",
+        "de": "Binärsensor deklarieren",
+        "es": "Declarar un sensor binario"
+      },
+      "description": {
+        "en": "A 1-bit state sent on the bus (DPT 1.x): motion detector, window contact, smoke or leak alarm…",
+        "fr": "Un état 1 bit envoyé sur le bus (DPT 1.x) : détecteur de mouvement, contact de fenêtre, alarme fumée ou fuite…",
+        "de": "Ein 1-Bit-Zustand auf dem Bus (DPT 1.x): Bewegungsmelder, Fensterkontakt, Rauch- oder Leckalarm…",
+        "es": "Un estado de 1 bit enviado al bus (DPT 1.x): detector de movimiento, contacto de ventana, alarma de humo o fuga…"
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "sensor_type",
+          "type": "select",
+          "default": "generic",
+          "required": true,
+          "label": {
+            "en": "Kind",
+            "fr": "Genre",
+            "de": "Art",
+            "es": "Clase"
+          },
+          "options": [
+            {
+              "value": "motion",
+              "label": {
+                "en": "Motion",
+                "fr": "Mouvement",
+                "de": "Bewegung",
+                "es": "Movimiento"
+              }
+            },
+            {
+              "value": "presence",
+              "label": {
+                "en": "Presence",
+                "fr": "Présence",
+                "de": "Anwesenheit",
+                "es": "Presencia"
+              }
+            },
+            {
+              "value": "opening",
+              "label": {
+                "en": "Window or door contact (1 = open)",
+                "fr": "Contact de fenêtre ou de porte (1 = ouvert)",
+                "de": "Fenster- oder Türkontakt (1 = offen)",
+                "es": "Contacto de ventana o puerta (1 = abierto)"
+              }
+            },
+            {
+              "value": "smoke",
+              "label": {
+                "en": "Smoke",
+                "fr": "Fumée",
+                "de": "Rauch",
+                "es": "Humo"
+              }
+            },
+            {
+              "value": "leak",
+              "label": {
+                "en": "Water leak",
+                "fr": "Fuite d’eau",
+                "de": "Wasserleck",
+                "es": "Fuga de agua"
+              }
+            },
+            {
+              "value": "rain",
+              "label": {
+                "en": "Rain",
+                "fr": "Pluie",
+                "de": "Regen",
+                "es": "Lluvia"
+              }
+            },
+            {
+              "value": "generic",
+              "label": {
+                "en": "Other on/off state",
+                "fr": "Autre état marche/arrêt",
+                "de": "Anderer Ein/Aus-Zustand",
+                "es": "Otro estado encendido/apagado"
+              }
+            }
+          ]
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "State address",
+            "fr": "Adresse d’état",
+            "de": "Statusadresse",
+            "es": "Dirección de estado"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "required": true
+        },
+        {
+          "key": "invert",
+          "type": "boolean",
+          "default": false,
+          "label": {
+            "en": "Invert the value",
+            "fr": "Inverser la valeur",
+            "de": "Wert invertieren",
+            "es": "Invertir el valor"
+          }
+        }
+      ]
+    },
+    {
+      "key": "add_climate",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Declare a thermostat",
+        "fr": "Déclarer un thermostat",
+        "de": "Thermostat deklarieren",
+        "es": "Declarar un termostato"
+      },
+      "description": {
+        "en": "A room temperature controller: setpoint (DPT 9.001) and measured temperature.",
+        "fr": "Un régulateur de température de pièce : consigne (DPT 9.001) et température mesurée.",
+        "de": "Ein Raumtemperaturregler: Sollwert (DPT 9.001) und gemessene Temperatur.",
+        "es": "Un regulador de temperatura ambiente: consigna (DPT 9.001) y temperatura medida."
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Living room ceiling light",
+            "fr": "Plafonnier du salon",
+            "de": "Deckenlicht Wohnzimmer",
+            "es": "Lámpara del salón"
+          }
+        },
+        {
+          "key": "target_temperature_address",
+          "type": "string",
+          "label": {
+            "en": "Setpoint address (DPT 9.001)",
+            "fr": "Adresse de consigne (DPT 9.001)",
+            "de": "Sollwertadresse (DPT 9.001)",
+            "es": "Dirección de consigna (DPT 9.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "required": true
+        },
+        {
+          "key": "target_temperature_state_address",
+          "type": "string",
+          "label": {
+            "en": "Setpoint status address",
+            "fr": "Adresse d’état de consigne",
+            "de": "Statusadresse Sollwert",
+            "es": "Dirección de estado de consigna"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "description": {
+            "en": "Status object of the actuator (read flag set in ETS). Empty: the device has no feedback, Gladys keeps the last command.",
+            "fr": "Objet d’état de l’actionneur (indicateur de lecture activé dans ETS). Vide : pas de retour d’état, Gladys garde la dernière commande.",
+            "de": "Statusobjekt des Aktors (Lesen-Flag in ETS gesetzt). Leer: keine Rückmeldung, Gladys behält den letzten Befehl.",
+            "es": "Objeto de estado del actuador (indicador de lectura activado en ETS). Vacío: sin retorno de estado, Gladys conserva la última orden."
+          }
+        },
+        {
+          "key": "temperature_address",
+          "type": "string",
+          "label": {
+            "en": "Measured temperature address (DPT 9.001)",
+            "fr": "Adresse de température mesurée (DPT 9.001)",
+            "de": "Adresse Isttemperatur (DPT 9.001)",
+            "es": "Dirección de temperatura medida (DPT 9.001)"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "min_temperature",
+          "type": "number",
+          "default": 7,
+          "min": -20,
+          "max": 60,
+          "label": {
+            "en": "Minimum setpoint (°C)",
+            "fr": "Consigne minimale (°C)",
+            "de": "Minimaler Sollwert (°C)",
+            "es": "Consigna mínima (°C)"
+          }
+        },
+        {
+          "key": "max_temperature",
+          "type": "number",
+          "default": 30,
+          "min": -20,
+          "max": 60,
+          "label": {
+            "en": "Maximum setpoint (°C)",
+            "fr": "Consigne maximale (°C)",
+            "de": "Maximaler Sollwert (°C)",
+            "es": "Consigna máxima (°C)"
+          }
+        },
+        {
+          "key": "temperature_step",
+          "type": "number",
+          "default": 0.5,
+          "min": 0.1,
+          "max": 5,
+          "label": {
+            "en": "Setpoint step (°C)",
+            "fr": "Pas de consigne (°C)",
+            "de": "Sollwertschritt (°C)",
+            "es": "Paso de consigna (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "list_devices",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "List the devices",
+        "fr": "Lister les appareils",
+        "de": "Geräte auflisten",
+        "es": "Listar los dispositivos"
+      },
+      "description": {
+        "en": "The declared devices, with their kind and main group address.",
+        "fr": "Les appareils déclarés, avec leur genre et leur adresse de groupe principale.",
+        "de": "Die deklarierten Geräte mit Art und Hauptgruppenadresse.",
+        "es": "Los dispositivos declarados, con su clase y su dirección de grupo principal."
+      }
+    },
+    {
+      "key": "remove_device",
+      "timeout_seconds": 15,
+      "label": {
+        "en": "Remove a declared device",
+        "fr": "Retirer un appareil déclaré",
+        "de": "Deklariertes Gerät entfernen",
+        "es": "Quitar un dispositivo declarado"
+      },
+      "description": {
+        "en": "It leaves the Discover tab. A device already added stays in Gladys until you delete it from the Devices tab.",
+        "fr": "Il quitte l’onglet Découverte. Un appareil déjà ajouté reste dans Gladys jusqu’à sa suppression depuis l’onglet Appareils.",
+        "de": "Es verschwindet aus dem Tab Entdecken. Ein bereits hinzugefügtes Gerät bleibt in Gladys, bis Sie es im Tab Geräte löschen.",
+        "es": "Desaparece de la pestaña Descubrir. Un dispositivo ya añadido permanece en Gladys hasta que lo elimine desde la pestaña Dispositivos."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Name or main group address",
+            "fr": "Nom ou adresse de groupe principale",
+            "de": "Name oder Hauptgruppenadresse",
+            "es": "Nombre o dirección de grupo principal"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "bus",
+      "icon": "activity",
+      "action_timeout_seconds": 15,
+      "label": {
+        "en": "KNX bus",
+        "fr": "Bus KNX",
+        "de": "KNX-Bus",
+        "es": "Bus KNX"
+      },
+      "description": {
+        "en": "Connection, traffic and last telegrams of the KNX bus.",
+        "fr": "Connexion, trafic et derniers télégrammes du bus KNX.",
+        "de": "Verbindung, Verkehr und letzte Telegramme des KNX-Busses.",
+        "es": "Conexión, tráfico y últimos telegramas del bus KNX."
+      },
+      "settings": [
+        {
+          "key": "max_telegrams",
+          "type": "number",
+          "default": 6,
+          "min": 1,
+          "max": 8,
+          "label": {
+            "en": "Telegrams shown",
+            "fr": "Télégrammes affichés",
+            "de": "Angezeigte Telegramme",
+            "es": "Telegramas mostrados"
+          }
+        },
+        {
+          "key": "group_filter",
+          "type": "string",
+          "label": {
+            "en": "Only these group addresses",
+            "fr": "Seulement ces adresses de groupe",
+            "de": "Nur diese Gruppenadressen",
+            "es": "Solo estas direcciones de grupo"
+          },
+          "placeholder": {
+            "en": "1/*, 2/1/*",
+            "fr": "1/*, 2/1/*",
+            "de": "1/*, 2/1/*",
+            "es": "1/*, 2/1/*"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "telegram_received",
+      "label": {
+        "en": "A KNX telegram is received",
+        "fr": "Un télégramme KNX est reçu",
+        "de": "Ein KNX-Telegramm wird empfangen",
+        "es": "Se recibe un telegrama KNX"
+      },
+      "description": {
+        "en": "On an address of the “Group addresses for scenes” field of the configuration: push button, central function, alarm…",
+        "fr": "Sur une adresse du champ « Adresses de groupe pour les scènes » de la configuration : bouton-poussoir, fonction centrale, alarme…",
+        "de": "An einer Adresse aus dem Feld „Gruppenadressen für Szenen“ der Konfiguration: Taster, Zentralfunktion, Alarm…",
+        "es": "En una dirección del campo «Direcciones de grupo para escenas» de la configuración: pulsador, función central, alarma…"
+      },
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe",
+            "de": "Gruppenadresse",
+            "es": "Dirección de grupo"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          },
+          "description": {
+            "en": "Three-level form (1/2/3). Empty: any address of the list.",
+            "fr": "Forme à trois niveaux (1/2/3). Vide : n’importe quelle adresse de la liste.",
+            "de": "Dreistufige Form (1/2/3). Leer: jede Adresse der Liste.",
+            "es": "Forma de tres niveles (1/2/3). Vacío: cualquier dirección de la lista."
+          }
+        },
+        {
+          "key": "telegram_type",
+          "type": "select",
+          "label": {
+            "en": "Telegram",
+            "fr": "Télégramme",
+            "de": "Telegramm",
+            "es": "Telegrama"
+          },
+          "options": [
+            {
+              "value": "write",
+              "label": {
+                "en": "Write",
+                "fr": "Écriture",
+                "de": "Schreiben",
+                "es": "Escritura"
+              }
+            },
+            {
+              "value": "response",
+              "label": {
+                "en": "Response",
+                "fr": "Réponse",
+                "de": "Antwort",
+                "es": "Respuesta"
+              }
+            },
+            {
+              "value": "read",
+              "label": {
+                "en": "Read request",
+                "fr": "Demande de lecture",
+                "de": "Leseanfrage",
+                "es": "Solicitud de lectura"
+              }
+            }
+          ]
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          },
+          "placeholder": {
+            "en": "true",
+            "fr": "true",
+            "de": "true",
+            "es": "true"
+          },
+          "description": {
+            "en": "Only this value (true, false, 21.5…). Empty: any value.",
+            "fr": "Seulement cette valeur (true, false, 21.5…). Vide : n’importe quelle valeur.",
+            "de": "Nur dieser Wert (true, false, 21.5…). Leer: jeder Wert.",
+            "es": "Solo este valor (true, false, 21.5…). Vacío: cualquier valor."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe",
+            "de": "Gruppenadresse",
+            "es": "Dirección de grupo"
+          }
+        },
+        {
+          "key": "source_address",
+          "type": "string",
+          "label": {
+            "en": "Sender (individual address)",
+            "fr": "Émetteur (adresse physique)",
+            "de": "Absender (physikalische Adresse)",
+            "es": "Emisor (dirección individual)"
+          }
+        },
+        {
+          "key": "telegram_type",
+          "type": "string",
+          "label": {
+            "en": "Telegram type",
+            "fr": "Type de télégramme",
+            "de": "Telegrammtyp",
+            "es": "Tipo de telegrama"
+          }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          },
+          "description": {
+            "en": "Decoded value as text (on/off as true/false, a color as #rrggbb).",
+            "fr": "Valeur décodée en texte (marche/arrêt en true/false, une couleur en #rrggbb).",
+            "de": "Dekodierter Wert als Text (Ein/Aus als true/false, eine Farbe als #rrggbb).",
+            "es": "Valor decodificado como texto (encendido/apagado como true/false, un color como #rrggbb)."
+          }
+        },
+        {
+          "key": "numeric_value",
+          "type": "number",
+          "label": {
+            "en": "Numeric value",
+            "fr": "Valeur numérique",
+            "de": "Numerischer Wert",
+            "es": "Valor numérico"
+          },
+          "description": {
+            "en": "The value as a number (on = 1, off = 0), empty otherwise.",
+            "fr": "La valeur en nombre (marche = 1, arrêt = 0), vide sinon.",
+            "de": "Der Wert als Zahl (Ein = 1, Aus = 0), sonst leer.",
+            "es": "El valor como número (encendido = 1, apagado = 0), vacío en otro caso."
+          }
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "label": {
+            "en": "Raw data (hex)",
+            "fr": "Données brutes (hex)",
+            "de": "Rohdaten (hex)",
+            "es": "Datos en bruto (hex)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "connection_lost",
+      "label": {
+        "en": "The KNX connection is lost",
+        "fr": "La connexion KNX est perdue",
+        "de": "Die KNX-Verbindung ist unterbrochen",
+        "es": "Se pierde la conexión KNX"
+      },
+      "description": {
+        "en": "The link to the KNX IP interface dropped after having worked.",
+        "fr": "La liaison avec l’interface IP KNX est tombée après avoir fonctionné.",
+        "de": "Die Verbindung zur KNX-IP-Schnittstelle ist abgebrochen, nachdem sie funktioniert hatte.",
+        "es": "El enlace con la interfaz IP KNX se ha caído después de haber funcionado."
+      },
+      "variables": [
+        {
+          "key": "gateway",
+          "type": "string",
+          "label": {
+            "en": "KNX IP interface",
+            "fr": "Interface IP KNX",
+            "de": "KNX-IP-Schnittstelle",
+            "es": "Interfaz IP KNX"
+          }
+        },
+        {
+          "key": "reason",
+          "type": "string",
+          "label": {
+            "en": "Reason",
+            "fr": "Raison",
+            "de": "Grund",
+            "es": "Motivo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "connection_restored",
+      "label": {
+        "en": "The KNX connection is restored",
+        "fr": "La connexion KNX est rétablie",
+        "de": "Die KNX-Verbindung ist wiederhergestellt",
+        "es": "Se restablece la conexión KNX"
+      },
+      "description": {
+        "en": "The link to the KNX IP interface works again after a loss.",
+        "fr": "La liaison avec l’interface IP KNX fonctionne de nouveau après une perte.",
+        "de": "Die Verbindung zur KNX-IP-Schnittstelle funktioniert nach einem Ausfall wieder.",
+        "es": "El enlace con la interfaz IP KNX vuelve a funcionar tras una pérdida."
+      },
+      "variables": [
+        {
+          "key": "gateway",
+          "type": "string",
+          "label": {
+            "en": "KNX IP interface",
+            "fr": "Interface IP KNX",
+            "de": "KNX-IP-Schnittstelle",
+            "es": "Interfaz IP KNX"
+          }
+        },
+        {
+          "key": "downtime_seconds",
+          "type": "number",
+          "label": {
+            "en": "Downtime (seconds)",
+            "fr": "Durée de la coupure (secondes)",
+            "de": "Ausfalldauer (Sekunden)",
+            "es": "Duración del corte (segundos)"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "send_value",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "Send a value on the KNX bus",
+        "fr": "Envoyer une valeur sur le bus KNX",
+        "de": "Einen Wert auf den KNX-Bus senden",
+        "es": "Enviar un valor al bus KNX"
+      },
+      "description": {
+        "en": "Writes a value to any group address, even one that is not a device in Gladys.",
+        "fr": "Écrit une valeur sur n’importe quelle adresse de groupe, même si elle n’est pas un appareil dans Gladys.",
+        "de": "Schreibt einen Wert an eine beliebige Gruppenadresse, auch wenn sie in Gladys kein Gerät ist.",
+        "es": "Escribe un valor en cualquier dirección de grupo, aunque no sea un dispositivo en Gladys."
+      },
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe",
+            "de": "Gruppenadresse",
+            "es": "Dirección de grupo"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "dpt",
+          "type": "string",
+          "required": true,
+          "default": "1.001",
+          "label": {
+            "en": "Datapoint type (DPT)",
+            "fr": "Type de point de données (DPT)",
+            "de": "Datenpunkttyp (DPT)",
+            "es": "Tipo de punto de datos (DPT)"
+          },
+          "placeholder": {
+            "en": "1.001",
+            "fr": "1.001",
+            "de": "1.001",
+            "es": "1.001"
+          },
+          "description": {
+            "en": "As in ETS: 1.001 on/off, 5.001 percentage, 9.001 temperature, 232.600 RGB color…",
+            "fr": "Comme dans ETS : 1.001 marche/arrêt, 5.001 pourcentage, 9.001 température, 232.600 couleur RVB…",
+            "de": "Wie in ETS: 1.001 Ein/Aus, 5.001 Prozent, 9.001 Temperatur, 232.600 RGB-Farbe…",
+            "es": "Como en ETS: 1.001 encendido/apagado, 5.001 porcentaje, 9.001 temperatura, 232.600 color RGB…"
+          }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          },
+          "placeholder": {
+            "en": "on",
+            "fr": "on",
+            "de": "on",
+            "es": "on"
+          },
+          "description": {
+            "en": "on/off, a number (21.5), a color (#ff8000), a text, or a scene variable.",
+            "fr": "on/off, un nombre (21.5), une couleur (#ff8000), un texte, ou une variable de scène.",
+            "de": "on/off, eine Zahl (21.5), eine Farbe (#ff8000), ein Text oder eine Szenenvariable.",
+            "es": "on/off, un número (21.5), un color (#ff8000), un texto o una variable de escena."
+          }
+        }
+      ]
+    },
+    {
+      "key": "read_value",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "Read a value on the KNX bus",
+        "fr": "Lire une valeur sur le bus KNX",
+        "de": "Einen Wert vom KNX-Bus lesen",
+        "es": "Leer un valor del bus KNX"
+      },
+      "description": {
+        "en": "Asks a group address for its value, for the next actions of the scene.",
+        "fr": "Demande sa valeur à une adresse de groupe, pour les actions suivantes de la scène.",
+        "de": "Fragt eine Gruppenadresse nach ihrem Wert, für die folgenden Aktionen der Szene.",
+        "es": "Pide su valor a una dirección de grupo, para las siguientes acciones de la escena."
+      },
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe",
+            "de": "Gruppenadresse",
+            "es": "Dirección de grupo"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "dpt",
+          "type": "string",
+          "required": true,
+          "default": "1.001",
+          "label": {
+            "en": "Datapoint type (DPT)",
+            "fr": "Type de point de données (DPT)",
+            "de": "Datenpunkttyp (DPT)",
+            "es": "Tipo de punto de datos (DPT)"
+          },
+          "placeholder": {
+            "en": "1.001",
+            "fr": "1.001",
+            "de": "1.001",
+            "es": "1.001"
+          },
+          "description": {
+            "en": "As in ETS: 1.001 on/off, 5.001 percentage, 9.001 temperature, 232.600 RGB color…",
+            "fr": "Comme dans ETS : 1.001 marche/arrêt, 5.001 pourcentage, 9.001 température, 232.600 couleur RVB…",
+            "de": "Wie in ETS: 1.001 Ein/Aus, 5.001 Prozent, 9.001 Temperatur, 232.600 RGB-Farbe…",
+            "es": "Como en ETS: 1.001 encendido/apagado, 5.001 porcentaje, 9.001 temperatura, 232.600 color RGB…"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          },
+          "description": {
+            "en": "Decoded value as text (on/off as true/false, a color as #rrggbb).",
+            "fr": "Valeur décodée en texte (marche/arrêt en true/false, une couleur en #rrggbb).",
+            "de": "Dekodierter Wert als Text (Ein/Aus als true/false, eine Farbe als #rrggbb).",
+            "es": "Valor decodificado como texto (encendido/apagado como true/false, un color como #rrggbb)."
+          }
+        },
+        {
+          "key": "numeric_value",
+          "type": "number",
+          "label": {
+            "en": "Numeric value",
+            "fr": "Valeur numérique",
+            "de": "Numerischer Wert",
+            "es": "Valor numérico"
+          },
+          "description": {
+            "en": "The value as a number (on = 1, off = 0), empty otherwise.",
+            "fr": "La valeur en nombre (marche = 1, arrêt = 0), vide sinon.",
+            "de": "Der Wert als Zahl (Ein = 1, Aus = 0), sonst leer.",
+            "es": "El valor como número (encendido = 1, apagado = 0), vacío en otro caso."
+          }
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "label": {
+            "en": "Raw data (hex)",
+            "fr": "Données brutes (hex)",
+            "de": "Rohdaten (hex)",
+            "es": "Datos en bruto (hex)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "recall_scene",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "Recall a KNX scene",
+        "fr": "Rappeler une scène KNX",
+        "de": "Eine KNX-Szene abrufen",
+        "es": "Recuperar una escena KNX"
+      },
+      "description": {
+        "en": "Sends a scene number (DPT 17.001) to a scene group address.",
+        "fr": "Envoie un numéro de scène (DPT 17.001) à une adresse de groupe de scène.",
+        "de": "Sendet eine Szenennummer (DPT 17.001) an eine Szenen-Gruppenadresse.",
+        "es": "Envía un número de escena (DPT 17.001) a una dirección de grupo de escena."
+      },
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe",
+            "de": "Gruppenadresse",
+            "es": "Dirección de grupo"
+          },
+          "placeholder": {
+            "en": "1/2/3",
+            "fr": "1/2/3",
+            "de": "1/2/3",
+            "es": "1/2/3"
+          }
+        },
+        {
+          "key": "scene_number",
+          "type": "number",
+          "required": true,
+          "default": 1,
+          "min": 1,
+          "max": 64,
+          "label": {
+            "en": "Scene number (1-64)",
+            "fr": "Numéro de scène (1-64)",
+            "de": "Szenennummer (1-64)",
+            "es": "Número de escena (1-64)"
+          }
+        }
+      ]
+    }
+  ]
+}
