@@ -12,7 +12,7 @@ Todo permanece en su red local (insignia **local**): la integración se comunica
 
 ## Requisitos
 
-- Gladys Assistant 5.1.1 o posterior.
+- Gladys Assistant 5.3.0 o posterior.
 - Una interfaz IP KNX (tunneling) o un router IP KNX en la misma red que Gladys, con un túnel libre.
 - Su proyecto ETS, o al menos la lista de direcciones de grupo de los dispositivos que quiere integrar (con sus tipos de punto de datos, DPT).
 - Para una interfaz KNX IP Secure: la dirección individual, el ID de usuario y la contraseña de un túnel (ETS, propiedades de la interfaz).

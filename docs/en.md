@@ -12,7 +12,7 @@ Everything stays on your local network (**local** badge): the integration talks 
 
 ## Requirements
 
-- Gladys Assistant 5.1.1 or later.
+- Gladys Assistant 5.3.0 or later.
 - A KNX IP interface (tunnelling) or a KNX IP router on the same network as Gladys, with a free tunnel.
 - Your ETS project, or at least the list of group addresses of the devices you want in Gladys (with their datapoint types, DPT).
 - For a KNX IP Secure interface: the individual address, user ID and password of a tunnel (ETS, properties of the interface).

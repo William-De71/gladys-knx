@@ -13,7 +13,7 @@ and to the KNX bus through a KNX IP interface or router with
 [KNXUltimate](https://github.com/Supergiovane/KNXUltimate) (MIT). Local only
 (`transports: ["local"]`).
 
-A **device integration** (`type: "device"`, Gladys 5.1.1+). KNX has no device
+A **device integration** (`type: "device"`, Gladys 5.3.0+). KNX has no device
 discovery: the user declares each device with a configuration button
 (`add_<kind>` actions) and its group addresses, the declarations are stored
 with `setConfig` under `knx_devices` (outside the config_schema, so in the
