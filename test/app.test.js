@@ -320,7 +320,7 @@ test('sensors: sizes, units and conversions', async () => {
   try {
     const sensors = [
       ['temperature', '3/0/1', '9.001', 21.5, 21.5],
-      ['pressure', '3/0/2', '9.006', 101325, 1012.5],
+      ['pressure', '3/0/2', '9.006', 101325, 1013.4],
       ['power', '3/0/3', '9.024', 1.5, 1500],
       ['energy_wh', '3/0/4', '13.010', 123456, 123.456],
       ['co2', '3/0/5', '9.008', 612, 612],
@@ -349,7 +349,7 @@ test('sensors: sizes, units and conversions', async () => {
     assert.equal(fake.lastState(ext('sensor:3-0-1:value')), 22.25);
     assert.equal(
       fake.lastState(ext('sensor:3-0-2:value')),
-      1012.5,
+      1013.4,
       'DPT 9 keeps 3 significant digits',
     );
     assert.equal(fake.lastState(ext('sensor:3-0-3:value')), 1500);
